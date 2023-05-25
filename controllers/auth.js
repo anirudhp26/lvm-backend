@@ -6,9 +6,8 @@ const salt = 1;
 
 export const login = async (req, res) => {
     const regusername = req.body.username;
-    const regemail = req.body.email;
     const regpassword = req.body.password;
-    User.find({ username: regusername } || { email: regemail }, (err, responce) => {
+    User.find({ username: regusername }, (err, responce) => {
         if (err != undefined) {
             res.status(401).json({ loginStatus: false, message: 'Some Error encountered, Please try again after sometime' })
         }
@@ -23,7 +22,8 @@ export const login = async (req, res) => {
                     console.log(responce[0]._id);
                     const token = jwt.sign({ id: responce[0]._id }, process.env.JWT_SECRET);
                     delete responce[0].password;
-                    res.status(200).json({ user: regusername, loginStatus: true, token });
+                    console.log(responce);
+                    res.status(200).json({ user: responce, loginStatus: true, token });
                 } else {
                     res.status(401).json({ loginStatus: false, message: 'Incorrect Password' })
                 }
@@ -52,13 +52,17 @@ export const getUsers = async (req,res) => {
 export const signup = async (req,res) => {
     try {
         const username = req.body.username;
-        const email = req.body.email;
+        const name = req.body.name;
+        const bio = req.body.bio;
         const regpassword = req.body.password;
         const newPassword = await bcrypt.hash(regpassword,salt);
-        const user = new User({username, email, password: newPassword});
+        const user = new User({username, password: newPassword, name: name, bio: bio});
         const responce = await user.save();
-        res.status(201).json({ user: responce, message: "Account Created" });
+        console.log(responce);
+        const token = jwt.sign({ id: responce._id }, process.env.JWT_SECRET);
+        res.status(201).json({ user: responce, message: "Account Successfully Created", token: token });
     } catch (error) {
+        console.log(error);
         res.status(401).json({ message: error.message });
     }
 }
