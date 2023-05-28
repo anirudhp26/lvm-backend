@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import { signup } from './controllers/auth.js';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
@@ -32,7 +31,6 @@ connection.once('open', () =>{
 });
 
 //authentication Part
-app.post('/auth/signup', signup);
 app.use('/auth', authRoutes);
 
 
