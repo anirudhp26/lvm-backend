@@ -33,7 +33,6 @@ connection.once('open', () =>{
 //authentication Part
 app.use('/auth', authRoutes);
 
-
 const port = process.env.PORT || 3001;
 
 app.listen(port, (req,res) => {
