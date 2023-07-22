@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
+import blogRoutes from './routes/blogs.js';
 dotenv.config();
 
 const app = express();
@@ -30,6 +31,7 @@ connection.once('open', () =>{
 
 //authentication Part
 app.use('/auth', authRoutes);
+app.use('/blog', blogRoutes);
 
 const port = process.env.PORT || 3001;
 

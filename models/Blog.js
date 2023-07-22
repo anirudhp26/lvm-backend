@@ -3,11 +3,12 @@ const Schema = mongoose.Schema;
 
 const blogs = new Schema(
     {
-        username: {type: String, required: true, trim: true,},
-        name: {type: String, required: true,},
-        bio: {type: String, required: true,},
-        impressed: {type: Array},
-        password: {type: String, required: true,trim: true,},
+        title: { type: String, required: true, },
+        user: { type: String, required: true },
+        impressed: { type: Number, required: true },
+        content: { type: String, required: true },
+        keywords: { type: Array, required: true },
+        views: { type: Number, required: true },
     },
     {
         timestamps: true,
