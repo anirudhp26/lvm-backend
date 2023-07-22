@@ -1,10 +1,10 @@
 import express from 'express';
-import { getblogbyid, getblogsbykeywords, getblogsbyuser, saveBlog } from '../controllers/blogs';
+import { getblogbyid, getblogsbykeywords, getblogsbyuser, saveBlog } from '../controllers/blogs.js';
 
-const blogRoutes = express.Router();
+const router = express.Router();
 
-blogRoutes.post('/getBlogbyID', getblogbyid);
-blogRoutes.post('/getBlogbyUser', getblogsbyuser);
-blogRoutes.post('/getBlogbyKeywords', getblogsbykeywords);
-blogRoutes.post('/saveblog', saveBlog);
-export default blogRoutes;
+router.post('/getBlogbyID', getblogbyid);
+router.post('/getBlogbyUser', getblogsbyuser);
+router.post('/getBlogbyKeywords', getblogsbykeywords);
+router.post('/saveblog', saveBlog);
+export default router

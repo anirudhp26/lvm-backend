@@ -1,5 +1,5 @@
-import Blog from "../models/Blog";
-import User from "../models/User";
+import Blog from "../models/Blog.js";
+import User from "../models/User.js";
 
 export const getblogsbyuser = (req,res) => {
     const user = req.body.username;
