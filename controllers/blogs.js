@@ -12,7 +12,7 @@ export const getblogsbyuser = async (req, res) => {
         if (err) {
             res.status(201).json({ message: 'Some Error occured, Please try after sometime' });
         } else {
-            res.status(200).json({ blogs: responce });
+            res.status(200).json({ blogs: responce, user: user });
         }
     })
 }
