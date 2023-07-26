@@ -20,7 +20,7 @@ export const login = async (req, res) => {
                 }
                 if (valid) {
                     const token = jwt.sign({ id: responce[0]._id }, process.env.JWT_SECRET);
-                    responce[0].password = null;
+                    responce[0].password = undefined;
                     res.status(201).json({ user: responce[0], loginStatus: true, token });
                 } else {
                     res.status(200).json({ loginStatus: false, message: 'Incorrect Password' })
@@ -41,6 +41,7 @@ export const getUsers = async (req,res) => {
                 res.send(err);
             }
             else{
+                responce.forEach(function(v){ v.password = undefined });
                 res.send(responce);
             }
         })
@@ -64,7 +65,7 @@ export const signup = async (req,res) => {
                 const user = new User({username, password: newPassword, name: name, bio: bio});
                 const responce = await user.save();
                 const token = jwt.sign({ id: responce._id }, process.env.JWT_SECRET);
-                responce.password = null;
+                responce.password = undefined;
                 res.status(201).json({ user: responce, message: "Account Successfully Created", token: token, loginStatus: true });
             }
         })
