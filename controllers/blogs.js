@@ -3,11 +3,7 @@ import User from "../models/User.js";
 
 export const getblogsbyuser = async (req, res) => {
     const username = req.body.user;
-    const user = await User.find({ user: username }, (err,response) => {
-        if (err) {
-            res.status(201).json({ message: "Some Error occured, Please try after sometime" });
-        }
-    });
+    const user = await User.find({ user: username });
     Blog.find({ user: user._id }, (err, responce) => {
         if (err) {
             res.status(201).json({ message: 'Some Error occured, Please try after sometime' });
