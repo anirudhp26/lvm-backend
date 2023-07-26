@@ -5,7 +5,6 @@ export const getblogsbyuser = async (req, res) => {
     const username = req.body.user;
     const user = await User.find({ username: username });
     user[0].password = undefined;
-    responce.forEach(function(v){ v.password = undefined });
     Blog.find({ user: user[0]._id }, (err, responce) => {
         if (err) {
             res.status(201).json({ message: 'Some Error occured, Please try after sometime' });
