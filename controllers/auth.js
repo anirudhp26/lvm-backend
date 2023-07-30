@@ -48,6 +48,16 @@ export const getUsers = async (req,res) => {
     }
 }
 
+export const updateUser = async (req, res) => {
+    const suser = req.body.user;
+    const responce = await User.updateOne({ _id: suser._id }, { impressed: suser.impressed }, { upsert: true});
+    if (responce.acknowledged) {
+        res.send(200).json({ updateUser: suser });
+    } else {
+        res.status(201).json({ message: 'Error occured, please try again after sometime' });
+    }
+}
+
 export const signup = async (req,res) => {
     try {
         const username = req.body.username;
