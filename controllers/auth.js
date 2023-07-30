@@ -52,7 +52,7 @@ export const updateUser = async (req, res) => {
     const suser = req.body.user;
     const responce = await User.updateOne({ _id: suser._id }, { impressed: suser.impressed }, { upsert: true});
     if (responce.acknowledged) {
-        res.status(200).json({ updateUser: suser });
+        res.status(200).json({ updatedUser: suser });
     } else {
         res.status(201).json({ message: 'Error occured, please try again after sometime' });
     }
