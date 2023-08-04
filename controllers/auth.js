@@ -50,7 +50,7 @@ export const getUsers = async (req,res) => {
 
 export const updateUser = async (req, res) => {
     const suser = req.body.user;
-    const responce = await User.updateOne({ _id: suser._id }, { impressed: suser.impressed }, { upsert: true});
+    const responce = await User.updateOne({ _id: suser._id }, { suser }, { upsert: true});
     if (responce.acknowledged) {
         res.status(200).json({ updatedUser: suser });
     } else {
