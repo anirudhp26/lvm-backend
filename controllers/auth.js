@@ -50,8 +50,8 @@ export const getUsers = async (req,res) => {
 
 export const updateUser = async (req, res) => {
     const suser = req.body.user;
-    let user = await User.findOne({_id: suser._id});
-    user = suser;
+    const user = await User.findOne({_id: suser._id});
+    Object.assign(user, suser);
     const responce = user.save();
     if (responce) {
         res.status(200).json({ updatedUser: suser });
