@@ -50,7 +50,7 @@ export const getUsers = async (req,res) => {
 
 export const updateUser = async (req, res) => {
     const suser = req.body.user;
-    const user = await User.findOne({_id: suser._id});
+    let user = await User.findOne({_id: suser._id});
     user = suser;
     const responce = user.save();
     if (responce) {
