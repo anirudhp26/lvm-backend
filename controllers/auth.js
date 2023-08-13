@@ -77,23 +77,22 @@ export const updateUser = async (req, res) => {
     if (googleUserUpdate) {
         let suser = req.body.user;
         if (suser.username === undefined || suser.username === "") {
-            suser.username = suser.name.trim() + suser.sub.substr(suser.sub.length - 3);
+            suser.username = suser.name.split(" ").join("").toLowerCase() + suser.sub.substr(suser.sub.length - 3);
         }
         const resp = await User.find({ username: suser.username });
         if (resp.length > 0) {
-            res.status(201).json({ username_available: false });
+            res.status(201).json({ username_available: false, message: "Username already taken" });
         } else {
-            res.status(200).json({ username_available: true });
-        }
-        suser.password = suser.sub;
-        suser.googleId = suser.sub;
-        const user = new User(suser);
-        const responce = await user.save();
-        if (responce) {
-            const token = jwt.sign({ id: responce._id }, process.env.JWT_SECRET);
-            res.status(200).json({ loginStatus: true, updatedUser: responce, token });
-        } else {
-            res.status(201).json({ loginStatus: false, message: "Error occured, please try again after sometime" })
+            suser.password = suser.sub;
+            suser.googleId = suser.sub;
+            const user = new User(suser);
+            const responce = await user.save();
+            if (responce) {
+                const token = jwt.sign({ id: responce._id }, process.env.JWT_SECRET);
+                res.status(200).json({ loginStatus: true, updatedUser: responce, token });
+            } else {
+                res.status(201).json({ loginStatus: false, message: "Error occured, please try again after sometime" })
+            }
         }
     } else {
         const suser = req.body.user;
