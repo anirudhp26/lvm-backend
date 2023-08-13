@@ -67,25 +67,35 @@ export const updateUser = async (req, res) => {
     const googleUserUpdate = req.body.googleUserUpdate;
     if (googleUserUpdate) {
         let suser = req.body.user;
-        suser.password = suser.sub;
-        suser.googleId = suser.sub;
-        const user = new User(suser);
-        const responce = await user.save();
-        if (responce) {
-            const token = jwt.sign({ id: responce._id }, process.env.JWT_SECRET);
-            res.status(200).json({ loginStatus: true, updatedUser: responce, token });
+        const usercheck = await User.find({ username: suser.username });
+        if (usercheck.length > 0) {
+            res.status(201).json({ message: "username already exists..!"});
         } else {
-            res.status(201).json({ loginStatus: false, message: "Error occured, please try again after sometime"})
+            suser.password = suser.sub;
+            suser.googleId = suser.sub;
+            const user = new User(suser);
+            const responce = await user.save();
+            if (responce) {
+                const token = jwt.sign({ id: responce._id }, process.env.JWT_SECRET);
+                res.status(200).json({ loginStatus: true, updatedUser: responce, token });
+            } else {
+                res.status(201).json({ loginStatus: false, message: "Error occured, please try again after sometime"})
+            }
         }
     } else {
         const suser = req.body.user;
-        const user = await User.findOne({_id: suser._id});
-        Object.assign(user, suser);
-        const responce = user.save();
-        if (responce) {
-            res.status(200).json({ updatedUser: suser });
+        const usercheck = await User.find({ username: suser.username });
+        if (usercheck.length > 0) {
+            res.status(201).json({ message: "username already exists..!"});
         } else {
-            res.status(201).json({ message: 'Error occured, please try again after sometime' });
+            const user = await User.findOne({_id: suser._id});
+            Object.assign(user, suser);
+            const responce = user.save();
+            if (responce) {
+                res.status(200).json({ updatedUser: suser });
+            } else {
+                res.status(201).json({ message: 'Error occured, please try again after sometime' });
+            }
         }
     }
 }
