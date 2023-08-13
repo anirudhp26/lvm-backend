@@ -45,6 +45,16 @@ export const login = async (req, res) => {
     }
 };
 
+export const checkUser = async (req,res) => {
+    const username = req.body.username;
+    const responce = await User.find({ username: username });
+    if (responce.length > 0) {
+        res.status(201).json({ username_available: false });
+    } else {
+        res.status(200).json({ username_available: true });
+    }
+}
+
 export const getUsers = async (req,res) => {
     const search = req.body.keyword || "";
     if (search === "") {
@@ -67,35 +77,25 @@ export const updateUser = async (req, res) => {
     const googleUserUpdate = req.body.googleUserUpdate;
     if (googleUserUpdate) {
         let suser = req.body.user;
-        const usercheck = await User.find({ username: suser.username });
-        if (usercheck.length > 0) {
-            res.status(201).json({ message: "username already exists..!"});
+        suser.password = suser.sub;
+        suser.googleId = suser.sub;
+        const user = new User(suser);
+        const responce = await user.save();
+        if (responce) {
+            const token = jwt.sign({ id: responce._id }, process.env.JWT_SECRET);
+            res.status(200).json({ loginStatus: true, updatedUser: responce, token });
         } else {
-            suser.password = suser.sub;
-            suser.googleId = suser.sub;
-            const user = new User(suser);
-            const responce = await user.save();
-            if (responce) {
-                const token = jwt.sign({ id: responce._id }, process.env.JWT_SECRET);
-                res.status(200).json({ loginStatus: true, updatedUser: responce, token });
-            } else {
-                res.status(201).json({ loginStatus: false, message: "Error occured, please try again after sometime"})
-            }
+            res.status(201).json({ loginStatus: false, message: "Error occured, please try again after sometime"})
         }
     } else {
         const suser = req.body.user;
-        const usercheck = await User.find({ username: suser.username });
-        if (usercheck.length > 0) {
-            res.status(201).json({ message: "username already exists..!"});
+        const user = await User.findOne({_id: suser._id});
+        Object.assign(user, suser);
+        const responce = user.save();
+        if (responce) {
+            res.status(200).json({ updatedUser: suser });
         } else {
-            const user = await User.findOne({_id: suser._id});
-            Object.assign(user, suser);
-            const responce = user.save();
-            if (responce) {
-                res.status(200).json({ updatedUser: suser });
-            } else {
-                res.status(201).json({ message: 'Error occured, please try again after sometime' });
-            }
+            res.status(201).json({ message: 'Error occured, please try again after sometime' });
         }
     }
 }
