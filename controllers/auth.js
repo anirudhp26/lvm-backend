@@ -9,13 +9,12 @@ export const login = async (req, res) => {
     if (isGoogleLogin) {
         const googleId = req.body.googleId;
         User.find({ googleId: googleId }, (err, responce) => {
-            if (responce) {
-                if (responce.length === 0) {
-                    res.status(201).json({ message: "You'll be redirected to edit profile page where you can add a username to your account"});              
-                } else {
-                    const token = jwt.sign({ id: responce[0]._id }, process.env.JWT_SECRET);
-                    res.status(200).json({ user: responce[0], loginStatus: true, token });
-                }
+            if (responce.length === 0) {
+                const token = jwt.sign({ id: googleId }, process.env.JWT_SECRET);
+                res.status(201).json({ message: "You'll be redirected to edit profile page where you can add a username to your account", token});              
+            } else {
+                const token = jwt.sign({ id: responce[0]._id }, process.env.JWT_SECRET);
+                res.status(200).json({ user: responce[0], loginStatus: true, token });
             }
         });
     } else {
