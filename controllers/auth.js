@@ -98,9 +98,9 @@ export const updateUser = async (req, res) => {
         const suser = req.body.user;
         const user = await User.findOne({ _id: suser._id });
         Object.assign(user, suser);
-        const responce = user.save();
+        const responce = await user.save();
         if (responce) {
-            res.status(200).json({ updatedUser: suser });
+            res.status(200).json({ updatedUser: responce });
         } else {
             res.status(201).json({ message: 'Error occured, please try again after sometime' });
         }
