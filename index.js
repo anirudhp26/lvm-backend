@@ -32,16 +32,6 @@ app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 
-let online_users = [];
-const add_online_user = async (username, userId, socketId) => {
-    !online_users.some(user => user.username === username) && online_users.push({ username, userId, socketId });
-}
-const remove_online_user = async (socketId) => {
-    online_users.filter(user => user.socketId !== socketId);
-}
-const getUser = async (username) => {
-    return online_users.find((user) => user.username === username);
-}
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
@@ -51,18 +41,32 @@ const io = new Server(server, {
     }
 });
 
+let online_users = {};
+
 io.on("connection", (socket) => {
     console.log(`User joined ${socket.id}`);
-    socket.on("send_notification_follow", async (data) => {
-        await add_online_user(data.from, data.sender_id, socket.id);
-        if (getUser(data.to)) {
-            const to = await getUser(data.to);
-            socket.to(to.socketId).emit("recieve_notification", { notification: `You just impressed ${data.from}`});
+    socket.on("newuser", async ({ username, userId }) => {
+        if (online_users[username]) {
+            online_users[username].socketId = socket.id;
+        } else {
+            online_users[username] = {socketId: socket.id, userId};
+        }
+        console.log(online_users);
+    })
+
+    socket.on("send_notification_follow", async ({ from, to}) => {
+        if (online_users[to]) {
+            socket.to(online_users[to].socketId).emit("recieve_notification", { notification: `You just impressed ${from}` });
         }
     })
-    socket.on("disconnect", () => {
-        remove_online_user(socket.id);
-        console.log("User Disconnected");
+
+    socket.on("disconnect", async () => {
+        const disconnectedUser = Object.keys(online_users).find(key => online_users[key].socketId === socket.id);
+        if (disconnectedUser) {
+            delete online_users[disconnectedUser];
+        }
+        console.log('A user disconnected:', socket.id);
+        console.log(online_users);
     })
 });
 
