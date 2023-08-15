@@ -44,14 +44,12 @@ const io = new Server(server, {
 let online_users = {};
 
 io.on("connection", (socket) => {
-    console.log(`User joined ${socket.id}`);
     socket.on("newuser", async ({ username, userId }) => {
         if (online_users[username]) {
             online_users[username].socketId = socket.id;
         } else {
             online_users[username] = {socketId: socket.id, userId};
         }
-        console.log(online_users);
     })
 
     socket.on("send_notification_follow", async ({ from, to}) => {
@@ -65,8 +63,6 @@ io.on("connection", (socket) => {
         if (disconnectedUser) {
             delete online_users[disconnectedUser];
         }
-        console.log('A user disconnected:', socket.id);
-        console.log(online_users);
     })
 });
 
