@@ -18,7 +18,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use(express.json());
 app.use(cors({
-    origin: ["http://localhost:3000", "https://test-4e8c8.web.app", "https://learnwithme-b8c40.web.app", "https://localhost:3000"],
+    origin: ["http://localhost:3000", "https://learnwithme-b8c40.web.app", "https://localhost:3000"],
     methods: ["GET", "POST"],
     credentials: true,
 }));
