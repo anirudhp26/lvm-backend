@@ -11,8 +11,6 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import path from 'path';
 import { verifyToken } from './middleware/auth.js';
-import http from 'http';
-import { Server } from 'socket.io';
 dotenv.config();
 
 const app = express();
@@ -31,40 +29,6 @@ app.use(morgan("common"));
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
-
-const server = http.createServer(app);
-const io = new Server(server, {
-    cors: {
-        origin: ["http://localhost:3000", "https://test-4e8c8.web.app", "https://learnwithme-b8c40.web.app", "https://localhost:3000"],
-        methods: ["GET", "POST"],
-        credentials: true,
-    }
-});
-
-let online_users = {};
-
-io.on("connection", (socket) => {
-    socket.on("newuser", async ({ username, userId }) => {
-        if (online_users[username]) {
-            online_users[username].socketId = socket.id;
-        } else {
-            online_users[username] = {socketId: socket.id, userId};
-        }
-    })
-
-    socket.on("send_notification_follow", async ({ from, to}) => {
-        if (online_users[to]) {
-            socket.to(online_users[to].socketId).emit("recieve_notification", { notification: `You just impressed ${from}` });
-        }
-    })
-
-    socket.on("disconnect", async () => {
-        const disconnectedUser = Object.keys(online_users).find(key => online_users[key].socketId === socket.id);
-        if (disconnectedUser) {
-            delete online_users[disconnectedUser];
-        }
-    })
-});
 
 //mongodb connection
 mongoose.set("strictQuery", true);
@@ -90,6 +54,6 @@ app.use('/auth', authRoutes);
 app.use('/blog', verifyToken, blogRoutes);
 
 const port = process.env.PORT || 3001;
-server.listen(port, (req, res) => {
-    console.log(`SOCKET AND SERVER BOTH RUNNING ON PORT ${port}`);
+app.listen(port, (req, res) => {
+    console.log(`SERVER RUNNING ON PORT ${port}`);
 })
