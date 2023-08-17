@@ -8,5 +8,6 @@ router.post("/login", login);
 router.post("/getUsers", verifyToken, getUsers);
 router.post("/signup", signup);
 router.post("/updateUser", verifyToken, updateUser);
+// router.post("/handlenotifications", handlenotifications);
 router.post("/checkusernameavailable", verifyToken, checkUser);
 export default router;

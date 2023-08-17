@@ -10,6 +10,7 @@ const users = new Schema(
         bio: {type: String, required: false,},
         picture: {type: String, required: false,},
         impressed: {type: Array},
+        notifications: {type: Array},
         password: {type: String, required: true,trim: true,},
     },
     {
