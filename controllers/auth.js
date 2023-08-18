@@ -72,18 +72,6 @@ export const getUsers = async (req, res) => {
     }
 }
 
-// export const handlenotifications = async (req, res) => {
-//     const notification = req.body.notifcation;
-//     const user = await User.findOne({ _id: req.body.userId});
-//     user.notifications.unshift(notification);
-//     const responce = user.save();
-//     if (responce) {
-//         res.status(200).json({ message: 'notification sent and saved'});
-//     } else {
-//         res.status(201).json({ message: 'some error occured please try again later'});
-//     }
-// }
-
 export const updateUser = async (req, res) => {
     const googleUserUpdate = req.body.googleUserUpdate;
     if (googleUserUpdate) {
