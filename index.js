@@ -11,6 +11,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import path from 'path';
 import { verifyToken } from './middleware/auth.js';
+import { signup } from './controllers/auth.js';
 dotenv.config();
 
 const app = express();
@@ -48,6 +49,9 @@ const storage = multer.diskStorage({
     },
 });
 const upload = multer({ storage });
+
+// routes with files
+app.post('/auth/signup', upload.single("picture"), signup);
 
 //authentication Part
 app.use('/auth', authRoutes);

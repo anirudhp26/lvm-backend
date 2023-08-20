@@ -114,6 +114,7 @@ export const signup = async (req, res) => {
         const name = req.body.name;
         const bio = req.body.bio;
         const regpassword = req.body.password;
+        const picture = req.body.picturePath;
         const newPassword = await bcrypt.hash(regpassword, salt);
         User.find({ username: username }, async (err, resp) => {
             if (err) {
@@ -122,7 +123,7 @@ export const signup = async (req, res) => {
             } else if (resp.length > 0) {
                 res.status(200).send({ message: "Username already Exists", loginStatus: false });
             } else {
-                const user = new User({ username, password: newPassword, name: name, bio: bio });
+                const user = new User({ username, password: newPassword, name: name, bio: bio, picture: picture });
                 const responce = await user.save();
                 const token = jwt.sign({ id: responce._id }, process.env.JWT_SECRET);
                 responce.password = undefined;
