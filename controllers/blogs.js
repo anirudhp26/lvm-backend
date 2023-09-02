@@ -24,23 +24,23 @@ export const getblogsbykeywords = (req, res) => {
 }
 
 export const getblogbyid = async (req, res) => {
-    const id = req.body.id;
-    var blog = await Blog.findOne({ _id: id }, async (err, response) => {
-        if (err) {
-            res.status(401).json({ message: "Some Error has occured please try again later!" });
+    const id = req.body.blogId;
+    var blog = await Blog.findOne({ _id: id });
+    try {
+        var views = blog.views;
+        views++;
+        blog.views = views;
+        blog = await Blog.findByIdAndUpdate(id, { views: views });
+        const userid = blog.user;
+        var user = await User.findOne({ _id: userid });
+        delete user.password;
+        if (blog) {
+            res.status(200).json({ blog: blog, user: user });
         } else {
-            const views = blog.views;
-            views++;
-            blog.views = views;
-            blog = await Blog.findByIdAndUpdate(id, { views: views });
+            res.status(401).json({ message: "Some Error has occured please try again later!" });
         }
-    });
-    const userid = blog.user;
-    var user = await User.findOne({ _id: userid });
-    delete user.password;
-    if (blog) {
-        res.status(200).json({ blog: blog, user: user });
-    } else {
+    } catch (error) {
+        console.log(error);
         res.status(401).json({ message: "Some Error has occured please try again later!" });
     }
 }
@@ -48,10 +48,11 @@ export const getblogbyid = async (req, res) => {
 export const saveBlog = async (req, res) => {
     const title = req.body.title;
     // const tArray = title.match(/\b(\w+)\b/g);
-    const tArray = [];
+    const tArray = req.body.keywords;
     const content = req.body.content;
     const writer = req.body.writer;
-    const blog = new Blog({ title: title, content: content, user: writer, keywords: tArray, impressed: 0, views: 0 });
+    const coverPath = req.body.coverPath;
+    const blog = new Blog({ title: title, content: content, user: writer, keywords: tArray, impressed: 0, views: 0, coverPath: coverPath });
     const responce = await blog.save();
     if (responce) {
         res.status(200).json({ blog: responce });

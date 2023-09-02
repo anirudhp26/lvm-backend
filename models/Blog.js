@@ -9,6 +9,7 @@ const blogs = new Schema(
         content: { type: String, required: true },
         keywords: { type: Array, required: true },
         views: { type: Number, required: true },
+        coverPath: { type: String, required: false },
     },
     {
         timestamps: true,

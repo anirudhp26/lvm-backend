@@ -12,6 +12,7 @@ import helmet from 'helmet';
 import path from 'path';
 import { verifyToken } from './middleware/auth.js';
 import { signup } from './controllers/auth.js';
+import { saveBlog } from './controllers/blogs.js';
 dotenv.config();
 
 const app = express();
@@ -48,10 +49,20 @@ const storage = multer.diskStorage({
         cb(null, file.originalname);
     },
 });
-const upload = multer({ storage });
+const upload = multer({ storage })
+const blogstorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "public/blogImg");
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
+    },
+});
+const blogupload = multer({ blogstorage });
 
 // routes with files
 app.post('/auth/signup', upload.single("picture"), signup);
+app.post('/blog/saveblog', blogupload.single("coverImg") , saveBlog);
 
 //authentication Part
 app.use('/auth', authRoutes);
