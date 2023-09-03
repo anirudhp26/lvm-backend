@@ -60,3 +60,11 @@ export const saveBlog = async (req, res) => {
         res.status(201).json({ message: 'Some error occured! Please try again after sometime...' });
     }
 }
+
+export const recommendation = async (req,res) => {
+    const id = req.body.id;
+    let recommendation = [];
+    const friends = await User.find({ impressed: { $elemMatch: {id} } });
+    console.log(friends);
+    res.status(200).json({ friends: friends });
+}
