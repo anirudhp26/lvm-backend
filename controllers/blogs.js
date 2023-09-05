@@ -62,9 +62,21 @@ export const saveBlog = async (req, res) => {
 }
 
 export const recommendation = async (req,res) => {
-    const id = req.body.id;
-    let recommendation = [];
-    const friends = await User.find({ impressed: { $elemMatch: {id} } });
-    console.log(friends);
-    res.status(200).json({ friends: friends });
+    try {
+        const id = req.body.id;
+        let gotimpressedbyBlogs = [];
+        const friends = await User.find({ impressed: { $in: [id] } });
+    
+        await Promise.all(friends.map(async (friend) => {
+            const blogs = await Blog.find({ user: friend._id });
+            console.log(blogs.length);
+            gotimpressedbyBlogs.push(...blogs);
+        }));
+    
+        console.log("sahbd");
+        res.status(200).json({ blogs: gotimpressedbyBlogs });
+    } catch (error) {
+        console.log(error);
+    }
+    
 }
