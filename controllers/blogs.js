@@ -47,7 +47,6 @@ export const getblogbyid = async (req, res) => {
 
 export const saveBlog = async (req, res) => {
     const title = req.body.title;
-    // const tArray = title.match(/\b(\w+)\b/g);
     const tArray = req.body.keywords;
     const content = req.body.content;
     const writer = req.body.writer;
