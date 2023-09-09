@@ -50,7 +50,7 @@ export const saveBlog = async (req, res) => {
     const tArray = req.body.keywords;
     const content = req.body.content;
     const writer = req.body.writer;
-    const coverPath = req.body.coverPath;
+    const coverPath = req.body.coverImgPath;
     const blog = new Blog({ title: title, content: content, user: writer, keywords: tArray, impressed: 0, views: 0, coverPath: coverPath });
     const responce = await blog.save();
     if (responce) {
