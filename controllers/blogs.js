@@ -76,6 +76,14 @@ export const recommendation = async (req,res) => {
         res.status(200).json({ blogs: gotimpressedbyBlogs });
     } catch (error) {
         console.log(error);
-    }
-    
+    }   
+}
+
+export const updateBlog = async (req,res) => {
+    const updated_blog = req.body.blog;
+    delete updated_blog.__v;
+    const blog = await Blog.findOne({ _id: updated_blog._id});
+    Object.assign(blog, updated_blog);
+    const save_blog = await blog.save();
+    res.status(200).json({ status: 'ok', updated_blog: updated_blog });    
 }

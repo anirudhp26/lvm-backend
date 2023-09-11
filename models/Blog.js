@@ -5,7 +5,7 @@ const blogs = new Schema(
     {
         title: { type: String, required: true, },
         user: { type: String, required: true },
-        impressed: { type: Number, required: true },
+        impressed: { type: Array, required: true },
         content: { type: String, required: true },
         keywords: { type: Array, required: true },
         views: { type: Number, required: true },
