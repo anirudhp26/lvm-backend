@@ -51,7 +51,7 @@ export const saveBlog = async (req, res) => {
     const content = req.body.content;
     const writer = req.body.writer;
     const coverPath = req.body.coverImgPath;
-    const blog = new Blog({ title: title, content: content, user: writer, keywords: tArray, impressed: 0, views: 0, coverPath: coverPath });
+    const blog = new Blog({ title: title, content: content, user: writer, keywords: tArray, impressed: [], views: 0, coverPath: coverPath });
     const responce = await blog.save();
     if (responce) {
         res.status(200).json({ blog: responce });
@@ -72,7 +72,6 @@ export const recommendation = async (req,res) => {
             gotimpressedbyBlogs.push(...blogs);
         }));
     
-        console.log("sahbd");
         res.status(200).json({ blogs: gotimpressedbyBlogs });
     } catch (error) {
         console.log(error);

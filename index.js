@@ -49,20 +49,10 @@ const storage = multer.diskStorage({
         cb(null, file.originalname);
     },
 });
-const upload = multer({ storage })
-const blogstorage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, "public/blogImg");
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.originalname);
-    },
-});
-const blogupload = multer({ blogstorage });
-
+const upload = multer({ storage });
 // routes with files
 app.post('/auth/signup', upload.single("picture"), signup);
-app.post('/blog/saveblog', blogupload.single("coverImg") , saveBlog);
+app.post('/blog/saveblog', upload.single("coverImg") , saveBlog);
 
 //authentication Part
 app.use('/auth', authRoutes);
