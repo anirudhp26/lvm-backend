@@ -1,5 +1,6 @@
 import Blog from "../models/Blog.js";
 import User from "../models/User.js";
+import Comments from "../models/Comments.js";
 
 export const getblogsbyuser = async (req, res) => {
     const username = req.body.user;
@@ -26,6 +27,7 @@ export const getblogsbykeywords = (req, res) => {
 export const getblogbyid = async (req, res) => {
     const id = req.body.blogId;
     var blog = await Blog.findOne({ _id: id });
+    
     try {
         var views = blog.views;
         views++;
@@ -34,8 +36,19 @@ export const getblogbyid = async (req, res) => {
         const userid = blog.user;
         var user = await User.findOne({ _id: userid });
         delete user.password;
+        const comments = await Comments.find({ blogId: id })
+        .populate({
+            path: 'author_id',
+            model: User,
+            select: 'username name picture'
+        })
+        .populate({
+            path: 'replies.author_id',
+            model: User,
+            select: 'username name picture',
+          });
         if (blog) {
-            res.status(200).json({ blog: blog, user: user });
+            res.status(200).json({ blog: blog, user: user, comments: comments });
         } else {
             res.status(401).json({ message: "Some Error has occured please try again later!" });
         }
@@ -84,5 +97,17 @@ export const updateBlog = async (req,res) => {
     const blog = await Blog.findOne({ _id: updated_blog._id});
     Object.assign(blog, updated_blog);
     const save_blog = await blog.save();
-    res.status(200).json({ status: 'ok', updated_blog: updated_blog });    
+    res.status(200).json({ status: 'ok', updated_blog: save_blog });    
+}
+
+export const addComment = async (req,res) => {
+    const blogId = req.body.blogId;
+    const userId = req.body.userId;
+    const content = req.body.content;
+    const comment = new Comments({ author_id: userId, blog_id: blogId, content: content, impressed: 0 });
+    const responce = await comment.save();
+    const comments = await Comments.find({ blogId: req.params.blogId }).populate('replies.author_id').populate('author_id');
+    if (responce) {
+        res.status(200).json({ comments: comments });
+    }
 }
