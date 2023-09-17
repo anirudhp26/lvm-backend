@@ -27,7 +27,7 @@ export const getblogsbykeywords = (req, res) => {
 export const getblogbyid = async (req, res) => {
     const id = req.body.blogId;
     var blog = await Blog.findOne({ _id: id });
-    
+
     try {
         var views = blog.views;
         views++;
@@ -36,7 +36,7 @@ export const getblogbyid = async (req, res) => {
         const userid = blog.user;
         var user = await User.findOne({ _id: userid });
         delete user.password;
-        const comments = await Comments.find({ blogId: id })
+        const comments = await Comments.find({ blog_id: id })
         .populate({
             path: 'author_id',
             model: User,
