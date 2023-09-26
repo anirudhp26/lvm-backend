@@ -5,7 +5,7 @@ import Comments from "../models/Comments.js";
 export const getblogsbyuser = async (req, res) => {
     const username = req.body.user;
     const user = await User.find({ username: username });
-    if(user.length !== 0){
+    if (user.length !== 0) {
         user[0].password = undefined;
         Blog.find({ user: user[0]._id }, (err, responce) => {
             if (err) {
@@ -37,16 +37,16 @@ export const getblogbyid = async (req, res) => {
         var user = await User.findOne({ _id: userid });
         delete user.password;
         const comments = await Comments.find({ blog_id: id })
-        .populate({
-            path: 'author_id',
-            model: User,
-            select: 'username name picture'
-        })
-        .populate({
-            path: 'replies.author_id',
-            model: User,
-            select: 'username name picture',
-          });
+            .populate({
+                path: 'author_id',
+                model: User,
+                select: 'username picture'
+            })
+            .populate({
+                path: 'replies.author_id',
+                model: User,
+                select: 'username picture',
+            });
         if (blog) {
             res.status(200).json({ blog: blog, user: user, comments: comments });
         } else {
@@ -73,34 +73,37 @@ export const saveBlog = async (req, res) => {
     }
 }
 
-export const recommendation = async (req,res) => {
+export const recommendation = async (req, res) => {
     try {
         const id = req.body.id;
         let gotimpressedbyBlogs = [];
         const friends = await User.find({ impressed: { $in: [id] } });
-    
+
         await Promise.all(friends.map(async (friend) => {
-            const blogs = await Blog.find({ user: friend._id });
-            console.log(blogs.length);
+            const blogs = await Blog.find({ user: friend._id }).populate({
+                path: 'user',
+                model: User,
+                select: 'username picture'
+            });
             gotimpressedbyBlogs.push(...blogs);
         }));
-    
-        res.status(200).json({ blogs: gotimpressedbyBlogs });
+        gotimpressedbyBlogs.sort((a, b) => b.createdAt - a.createdAt);
+        res.status(200).json({ blogs: gotimpressedbyBlogs, friends: friends });
     } catch (error) {
         console.log(error);
-    }   
+    }
 }
 
-export const updateBlog = async (req,res) => {
+export const updateBlog = async (req, res) => {
     const updated_blog = req.body.blog;
     delete updated_blog.__v;
-    const blog = await Blog.findOne({ _id: updated_blog._id});
+    const blog = await Blog.findOne({ _id: updated_blog._id });
     Object.assign(blog, updated_blog);
     const save_blog = await blog.save();
-    res.status(200).json({ status: 'ok', updated_blog: save_blog });    
+    res.status(200).json({ status: 'ok', updated_blog: save_blog });
 }
 
-export const addComment = async (req,res) => {
+export const addComment = async (req, res) => {
     const blogId = req.body.blogId;
     const userId = req.body.userId;
     const content = req.body.content;
