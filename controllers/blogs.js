@@ -76,10 +76,13 @@ export const saveBlog = async (req, res) => {
 export const recommendation = async (req, res) => {
     try {
         const id = req.body.id;
-        const gotimpressedbyBlogs = await Blog.find();
+        const gotimpressedbyBlogs = await Blog.find().populate({
+            path: 'user',
+            model: User,
+            select: 'username picture'
+        });;
         // let gotimpressedbyBlogs = [];
         const friends = await User.find({ impressed: { $in: [id] } });
-
         // await Promise.all(friends.map(async (friend) => {
         //     const blogs = await Blog.find({ user: friend._id }).populate({
         //         path: 'user',
