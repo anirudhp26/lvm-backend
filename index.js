@@ -52,7 +52,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 // routes with files
 app.post('/auth/signup', upload.single("picture"), signup);
-app.post('/blog/saveblog', upload.single("coverImg") , saveBlog);
+app.post('/blog/saveblog', upload.single("coverImg"), saveBlog);
 
 //authentication Part
 app.use('/auth', authRoutes);
