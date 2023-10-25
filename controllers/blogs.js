@@ -107,6 +107,16 @@ export const updateBlog = async (req, res) => {
     res.status(200).json({ status: 'ok', updated_blog: save_blog });
 }
 
+export const deleteBlog = async (req,res) => {
+    const id = req.body.id;
+    const responce = await Blog.deleteOne({ _id: id });
+    if (responce) {
+        res.status(200).json({ status: "OK" });
+    } else {
+        res.status(400).json({ status: "Error" });
+    }
+}
+
 export const addComment = async (req, res) => {
     const blogId = req.body.blogId;
     const userId = req.body.userId;
