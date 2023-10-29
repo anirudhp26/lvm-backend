@@ -73,26 +73,37 @@ export const saveBlog = async (req, res) => {
     }
 }
 
-export const recommendation = async (req, res) => {
+export const trending = async (req, res) => {
     try {
         const id = req.body.id;
         const gotimpressedbyBlogs = await Blog.find().populate({
             path: 'user',
             model: User,
             select: 'username picture'
-        });;
-        // let gotimpressedbyBlogs = [];
-        const friends = await User.find({ impressed: { $in: [id] } });
-        // await Promise.all(friends.map(async (friend) => {
-        //     const blogs = await Blog.find({ user: friend._id }).populate({
-        //         path: 'user',
-        //         model: User,
-        //         select: 'username picture'
-        //     });
-        //     gotimpressedbyBlogs.push(...blogs);
-        // }));
+        }).sort({ views: -1 }).limit(10);
         gotimpressedbyBlogs.sort((a, b) => b.createdAt - a.createdAt);
+        const friends = await User.find({ impressed: { $in: [id] } });
         res.status(200).json({ blogs: gotimpressedbyBlogs, friends: friends });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const personalized = async (req, res) => {
+    try {
+        const id = req.body.id;
+        let gotimpressedbyBlogs = [];
+        const friends = await User.find({ impressed: { $in: [id] } });
+        await Promise.all(friends.map(async (friend) => {
+            const blogs = await Blog.find({ user: friend._id }).populate({
+                path: 'user',
+                model: User,
+                select: 'username picture'
+            });
+            gotimpressedbyBlogs.push(...blogs);
+        }));
+        res.status(200).json({ blogs: gotimpressedbyBlogs });
+        
     } catch (error) {
         console.log(error);
     }
