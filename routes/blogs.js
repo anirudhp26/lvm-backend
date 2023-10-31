@@ -6,6 +6,7 @@ const router = express.Router();
 router.post('/getBlogbyID', getblogbyid);
 router.post('/getBlogbyUser', getblogsbyuser);
 router.post('/getBlogbyKeywords', getblogsbykeywords);
+router.post('/saveblog', saveBlog);
 router.post('/getTrending', trending);
 router.post('/getPersonalized', personalized);
 router.post('/updateBlog', updateBlog);

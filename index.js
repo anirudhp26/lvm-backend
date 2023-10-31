@@ -41,18 +41,6 @@ connection.once('open', () => {
     console.log("DATABASE CONNECTED SUCCESFULLY");
 });
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, "public/assets");
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.originalname);
-    },
-});
-const upload = multer({ storage });
-// routes with files
-app.post('/auth/signup', upload.single("picture"), signup);
-app.post('/blog/saveblog', upload.single("coverImg"), saveBlog);
 
 //authentication Part
 app.use('/auth', authRoutes);
