@@ -6,13 +6,9 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
 import blogRoutes from './routes/blogs.js';
 import { fileURLToPath } from 'url';
-import multer from 'multer';
 import morgan from 'morgan';
-// import helmet from 'helmet';
 import path from 'path';
 import { verifyToken } from './middleware/auth.js';
-import { signup } from './controllers/auth.js';
-import { saveBlog } from './controllers/blogs.js';
 dotenv.config();
 
 const app = express();
@@ -25,8 +21,6 @@ app.use(cors({
     credentials: true,
 }));
 
-// app.use(helmet());
-// app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
