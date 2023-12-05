@@ -11,6 +11,7 @@ const users = new Schema(
         picture: {type: String, required: false,},
         impressed: {type: Array},
         notifications: {type: Array},
+        bookmarks: {type: Array},
         password: {type: String, required: true,trim: true,},
     },
     {
